@@ -1,3 +1,5 @@
+import GameView
+
 class TestGameView:
     def test_display_boards():
         view = GameView()

@@ -1,3 +1,5 @@
+import GameController
+
 class TestGameController:
     def test_input_validation():
         controller = GameController(model, view)
