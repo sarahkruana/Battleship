@@ -1,19 +1,17 @@
 class GameController:
     def __init__(self, model, view):
-        self.model = model
-        self.view = view
-
-    def run_game():
+        store model
+        store view
+    def start():
         model.start_game()
-
-        while not model.check_winner():
-            current_player = get_current_player()
-            target = view.get_player_input()
-            if input_is_valid(target):
-                model.confirm_target(current_player, target)
-
-            view.refresh_display(model)
-            switch_players()
-
+        while no winner:
+            view.display_boards(current_player)
+            row, col = view.get_player_input()
+            if input valid:
+                result = model.confirm_target(current_player, row, col)
+                view.display_result(result)
+                model.switch_turn()
+            else:
+                view.display_invalid_input()
         winner = model.check_winner()
-        view.show_winner(winner)
+        view.display_winner(winner)
