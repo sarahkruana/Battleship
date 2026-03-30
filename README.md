@@ -12,7 +12,6 @@ The model will handle the game mechanics.
 - starting the game
 - ending the game
 - placing the target (and determining validity)
-- confirming the target (and determining validity)
 - determining the winner
 - keeping score
 - etc (will be updated as we continue making the game)
