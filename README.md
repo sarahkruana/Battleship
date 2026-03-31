@@ -15,6 +15,8 @@ The model will handle the game mechanics.
 - determining the winner
 - keeping score
 - etc (will be updated as we continue making the game)
+to note:
+- the red player will start first, you cannot place any ships after the game has been started, you cannot attack if the game has not been started yet
 
 Controller:
 The controller will handle user input and pass it to the model
@@ -30,15 +32,15 @@ The textual view will represent both the human players board along with a model 
 - etc (will be updated as we continue making the game)
 
 # File Path Structure
-+- src/
++- Battleship/
 
 | +- main/
 
-|| +- controller/
+| +- controller/
 
-|| +- model/
+| +- model/
 
-|| +- view/
+| +- view/
 
 | +- test/
 

@@ -6,7 +6,12 @@ class Board:
     HIT = "X"
     MISS = "O"
 
-    def __init__(board, size: int):
+    '''
+    Constructor to create an empty board that the players can fill with ships
+    @param size (int) represents the size of the board. 
+    The size cannot be greater than ten nor less than 5. 
+    '''
+    def __init__(board, size):
         if size > 10:
             raise ValueError("board size is too large")
         if size < 5:
@@ -17,7 +22,11 @@ class Board:
         board.ships: list[Ship] = []
         board.attacks: set[tuple[int,int]] = set()
 
-    def canPlace(board, positions: list[tuple[int, int]]) -> bool:
+    '''
+    Returns (boolean) if a ship can be placed in a certain set of locations
+    @param positions (list[tuple[int, int]]) represents the positions to place the ship onto
+    '''
+    def canPlace(board, positions) -> bool:
         for row, col in positions:
             if board.grid[row][col] != board.EMPTY:
                 return False
@@ -36,13 +45,24 @@ class Board:
         
         return True
 
+    '''
+    Helper method that returns (boolean) if a given list of integers is contiguous. 
+    Used in canPlace.
+    @param line (list[int]) represents the list of integers (given rows/cols)
+    '''
     def checkContiguous(board, line: list[int]) -> bool:
         sorted = sorted(line)
         if sorted != list(range(sorted[0], sorted[0] + len(sorted))):
             return False
         return True
         
-    def placeShip(board, ship: Ship, positions: list[tuple[int, int]]) -> bool:
+    '''
+    Returns (boolean) whether the placing a ship is successful or not. If it can,
+    it will place a ship on the board at the designated positions
+    @param ship (Ship) represents the designated ship
+    @param positions (list[tuple[int, int]]) represents the list of positions to place the ship at
+    '''
+    def placeShip(board, ship, positions) -> bool:
         if not board.canPlace(positions):
             return False
         
@@ -53,7 +73,13 @@ class Board:
 
         return True
     
-    def attacked(board, row: int, col: int) -> str:
+    '''
+    Handles what happens when a certain location on the grid is attacked by the opposing player
+    Returns (str) of the outcome of the attack (invalid, already_attacked, sunk, hit, miss)
+    @param row (int) represents the row of the designated attack location
+    @param col (int) represents the col of the designated attack location
+    '''
+    def attacked(board, row, col) -> str:
         if board.checkInput(row, col) == False:
             return "invalid"
         
@@ -73,18 +99,29 @@ class Board:
         board.grid[row][col] = board.MISS
         return "miss"
     
-    def checkInput(board, row: int, col: int) -> bool:
+    '''
+    Returns (boolean) if the given row and col are valid inputs
+    @param row (int) represents the row of the designated location
+    @param col (int) represents the col of the designated location
+    '''
+    def checkInput(board, row, col) -> bool:
         if row < 0 or row >= board.size:
                 return False
         if col < 0 or col >= board.size:
                 return False
         return True
         
-    
+    '''
+    Returns (boolean) if all the ships on the board are sunk
+    '''
     def allSunk(board) -> bool:
         return all(ship.isSunk() for ship in board.ships)
  
-    def allPlaced(board, ships: list[Ship]) -> bool:
+    '''
+    Returns (boolean) if all the possible ships are placed on the board
+    @param ships (list[Ships]) represent the different ships that either are/aren't placed
+    '''
+    def allPlaced(board, ships) -> bool:
         return all(ship in board.ships for ship in ships)
 
 
