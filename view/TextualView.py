@@ -46,7 +46,7 @@ class TextualView:
             print("\n" + ship.__str__())
         
         print(f"\n {opponent.name}'s board:")
-        view.showBoard(opponent.board, True)
+        view.printBoard(opponent.board, True)
 
     '''
     Prints the winner of the game

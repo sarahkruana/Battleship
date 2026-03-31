@@ -39,9 +39,9 @@ class Board:
             return False
         
         if len(set(rows)) == 1:
-            return board.checkContiguous(rows)
-        else:
             return board.checkContiguous(cols)
+        else:
+            return board.checkContiguous(rows)
         
         return True
 
@@ -51,8 +51,8 @@ class Board:
     @param line (list[int]) represents the list of integers (given rows/cols)
     '''
     def checkContiguous(board, line: list[int]) -> bool:
-        sorted = sorted(line)
-        if sorted != list(range(sorted[0], sorted[0] + len(sorted))):
+        s = sorted(line)
+        if s != list(range(s[0], s[0] + len(s))):
             return False
         return True
         

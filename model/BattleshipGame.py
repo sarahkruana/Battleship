@@ -84,7 +84,7 @@ class BattleshipGame:
 
         if attackResult == "sunk":
             if game.getOpponent.board.allSunk() == True:
-                game.winner = game.getCurrent
+                game.winner = game.getCurrent()
 
         game.current += 1
         return attackResult
@@ -106,10 +106,10 @@ class BattleshipGame:
     The game is over when a players entire fleet is sunk.
     '''
     def isOver(game) -> bool:
-        if game.totalAttacks(game.redPlayer) == 5:
+        if game.redPlayer.board.allSunk():
             game.winner = game.bluePlayer
             return True
-        if game.totalAttacks(game.bluePlayer) == 5:
+        if game.bluePlayer.board.allSunk():
             game.winner = game.redPlayer
             return True
         return False
