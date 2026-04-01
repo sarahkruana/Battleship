@@ -61,9 +61,9 @@ class TextualView:
     @param row (int) represents 0-based row number of the attack
     @param col (int) represents 0-based col number of the attack
     @param result (str) represents what happened after the attack
-    @param ship (Ship) represents teh ship that was attacked
+    @param ship (Ship) represents the ship that was attacked
     '''
-    def showAttackResult(view, attacker, row, col, result, ship):
+    def showAttackResult(view, attacker, row, col, result):
         loc = f"({row + 1}, {col + 1})"
 
         if result == "hit":
@@ -71,7 +71,7 @@ class TextualView:
         elif result == "miss":
             print(f"  {attacker} fired at {loc} — miss.")
         elif result == "sunk":
-            print(f"  {attacker} fired at {loc} — HIT! {ship.name} has been sunk!")
+            print(f"  {attacker} fired at {loc} — HIT! Ship has been sunk!")
         elif result == "already_attacked":
             print(f"  {loc} has already been attacked. Please pick a different spot.")
         elif result == "invalid":
