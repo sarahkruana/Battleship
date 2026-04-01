@@ -1,1 +1,224 @@
+import unittest
 
+from model.BattleshipGame import BattleshipGame
+from model.Player import Player
+from model.Ship import Ship
+
+
+class TestGameModel(unittest.TestCase):
+
+    def setUp(self):
+        """Set up a fresh game for each test"""
+        self.game = BattleshipGame("RedPlayer", "BluePlayer", 5)
+        self.red = self.game.redPlayer
+        self.blue = self.game.bluePlayer
+
+    # ======================
+    # Initialization Tests
+    # ======================
+
+    def test_initialization(self):
+        self.assertEqual(self.game.size, 5)
+        self.assertEqual(self.game.redPlayer.name, "RedPlayer")
+        self.assertEqual(self.game.bluePlayer.name, "BluePlayer")
+        self.assertEqual(self.game.current, 0)
+        self.assertIsNone(self.game.winner)
+        self.assertFalse(self.game.started)
+
+    def test_getCurrent_red_starts(self):
+        self.assertEqual(self.game.getCurrent(), self.red)
+
+    def test_getCurrent_after_one_turn(self):
+        self.game.current = 1
+        self.assertEqual(self.game.getCurrent(), self.blue)
+
+    def test_getOpponent(self):
+        self.assertEqual(self.game.getOpponent(), self.blue)
+        self.game.current = 1
+        self.assertEqual(self.game.getOpponent(), self.red)
+
+    # ======================
+    # Ship Placement Tests
+    # ======================
+
+    def test_placeShip_before_game_start_succeeds(self):
+        ship = Ship("Destroyer", 2)
+        positions = [(0, 0), (0, 1)]
+        result = self.game.placeShip(self.red, ship, positions)
+        self.assertTrue(result)
+        self.assertIn(ship, self.red.board.ships)
+
+    def test_placeShip_after_game_started_raises_error(self):
+        self.game.started = True
+        ship = Ship("Destroyer", 2)
+        positions = [(0, 0), (0, 1)]
+        
+        with self.assertRaises(RuntimeError) as cm:
+            self.game.placeShip(self.red, ship, positions)
+        self.assertIn("already been started", str(cm.exception))
+
+    def test_placeShip_invalid_positions_returns_false(self):
+        ship = Ship("Destroyer", 2)
+        positions = [(0, 0), (0, 0)]
+        result = self.game.placeShip(self.red, ship, positions)
+        self.assertFalse(result)
+
+    # ======================
+    # allPlaced Tests
+    # ======================
+
+    def test_allPlaced_false_when_no_ships_placed(self):
+        self.assertFalse(self.game.allPlaced(self.red))
+
+    def test_allPlaced_true_after_all_ships_placed(self):
+        for ship in self.red.fleet:
+            # Place each ship horizontally from left
+            positions = [(0, i) for i in range(ship.size)]
+            self.game.placeShip(self.red, ship, positions)
+        
+        self.assertTrue(self.game.allPlaced(self.red))
+
+    # ======================
+    # Game Start Tests
+    # ======================
+
+    def test_gameStart_success_when_all_ships_placed(self):
+        # Place all ships for both players
+        for player in [self.red, self.blue]:
+            for i, ship in enumerate(player.fleet):
+                positions = [(i, j) for j in range(ship.size)]
+                self.game.placeShip(player, ship, positions)
+
+        self.game.gameStart()
+        self.assertTrue(self.game.started)
+
+    def test_gameStart_raises_if_red_not_fully_placed(self):
+        # Only place blue's ships
+        for i, ship in enumerate(self.blue.fleet):
+            positions = [(i, j) for j in range(ship.size)]
+            self.game.placeShip(self.blue, ship, positions)
+
+        with self.assertRaises(RuntimeError) as cm:
+            self.game.gameStart()
+        self.assertIn("redPlayer has not placed all ships", str(cm.exception))
+
+    def test_gameStart_raises_if_already_started(self):
+        self.game.started = True
+        with self.assertRaises(RuntimeError) as cm:
+            self.game.gameStart()
+        self.assertIn("already been started", str(cm.exception))
+
+    # ======================
+    # Attack Tests
+    # ======================
+
+    def test_attack_returns_miss_on_empty_cell(self):
+        self.game.started = True
+        result = self.game.attack(0, 0)
+        self.assertEqual(result, "miss")
+
+    def test_attack_returns_hit_when_ship_hit(self):
+        self.game.started = True
+        ship = Ship("Destroyer", 2)
+        self.game.placeShip(self.blue, ship, [(0, 0), (0, 1)])  # place on opponent's board
+
+        result = self.game.attack(0, 0)
+        self.assertEqual(result, "hit")
+
+    def test_attack_returns_sunk_when_ship_fully_hit(self):
+        self.game.started = True
+        ship = Ship("Destroyer", 2)
+        self.game.placeShip(self.blue, ship, [(0, 0), (0, 1)])
+
+        self.game.attack(0, 0)
+        result = self.game.attack(0, 1)
+        self.assertEqual(result, "sunk")
+
+    def test_attack_increments_current_player(self):
+        self.game.started = True
+        initial_current = self.game.current
+        self.game.attack(0, 0)
+        self.assertEqual(self.game.current, initial_current + 1)
+
+    def test_attack_on_already_attacked_cell(self):
+        self.game.started = True
+        self.game.attack(0, 0)
+        result = self.game.attack(0, 0)
+        self.assertEqual(result, "already_attacked")
+
+    def test_attack_off_board_returns_invalid(self):
+        self.game.started = True
+        result = self.game.attack(-1, 0)
+        self.assertEqual(result, "invalid")
+        result = self.game.attack(0, 15)
+        self.assertEqual(result, "invalid")
+
+    # ======================
+    # Game Over & Winner Tests
+    # ======================
+
+    def test_isOver_false_when_no_fleet_sunk(self):
+        self.assertFalse(self.game.isOver())
+
+    def test_isOver_true_when_red_fleet_sunk(self):
+        self.game.started = True
+        for ship in self.red.fleet:
+            for pos in ship.positions:
+                pass
+
+        # Place and sink all red ships
+        for i, ship in enumerate(self.red.fleet):
+            positions = [(i, j) for j in range(ship.size)]
+            self.game.placeShip(self.red, ship, positions)
+
+        # To sink and attack all ships
+        for ship in self.red.fleet:
+            for r, c in ship.positions:
+                self.game.attack(r, c)
+
+        self.assertTrue(self.game.isOver())
+        self.assertEqual(self.game.winner, self.blue)
+
+    def test_totalAttacks_returns_correct_score(self):
+        ship1 = Ship("Destroyer", 2)
+        ship1.hits = {(0,0), (0,1)}
+        ship2 = Ship("Cruiser", 3)
+
+        self.red.fleet = [ship1, ship2]
+        self.assertEqual(self.game.totalAttacks(self.red), 2)
+
+    # ======================
+    # checkStarted Tests
+    # ======================
+
+    def test_checkStarted_notStarted_returns_false_if_already_started(self):
+        self.game.started = True
+        self.assertFalse(self.game.checkStarted("notStarted"))
+
+    def test_checkStarted_started_returns_false_if_not_started(self):
+        self.assertFalse(self.game.checkStarted("started"))
+
+    def test_checkStarted_returns_true_for_valid_states(self):
+        self.assertTrue(self.game.checkStarted("notStarted"))
+        self.game.started = True
+        self.assertTrue(self.game.checkStarted("started"))
+
+    # ======================
+    # Edge Cases
+    # ======================
+
+    def test_winner_is_set_when_opponent_fleet_sunk_during_attack(self):
+        self.game.started = True
+        # To place minimal fleet for testing
+        test_ship = Ship("Destroyer", 2)
+        self.blue.fleet = [test_ship]
+        self.game.placeShip(self.blue, test_ship, [(0, 0), (0, 1)])
+
+        self.game.attack(0, 0)
+        self.game.attack(0, 1)
+
+        self.assertTrue(self.game.isOver())
+        self.assertEqual(self.game.winner, self.red)
+
+if __name__ == '__main__':
+    unittest.main()
