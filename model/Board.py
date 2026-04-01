@@ -33,14 +33,18 @@ class Board:
             if not board.checkInput(row, col):
                 return False
             
-        rows = [row for row, _ in positions]
-        cols = [col for col, _ in positions]
+        rows = [r for r, _ in positions]
+        cols = [c for _, c in positions]
+        print(f"rows: {rows}, cols: {cols}")
         if len(set(rows)) != 1 and len(set(cols)) != 1:
+            print("failed: not a straight line")
             return False
         
         if len(set(rows)) == 1:
+            print("columns are not contiguous")
             return board.checkContiguous(cols)
         else:
+            print("rows are not contiguous")
             return board.checkContiguous(rows)
         
         return True
@@ -50,9 +54,10 @@ class Board:
     Used in canPlace.
     @param line (list[int]) represents the list of integers (given rows/cols)
     '''
-    def checkContiguous(board, line: list[int]) -> bool:
-        s = sorted(line)
-        if s != list(range(s[0], s[0] + len(s))):
+    def checkContiguous(board, line) -> bool:
+        if len(set(line)) != len(line):
+            return False
+        if max(line) - min(line) != len(line) - 1:
             return False
         return True
         
@@ -66,7 +71,7 @@ class Board:
         if not board.canPlace(positions):
             return False
         
-        ship.place(positions)
+        ship.placeShip(positions)
         board.ships.append(ship)
         for row, col in positions:
             board.grid[row][col] = board.SHIP

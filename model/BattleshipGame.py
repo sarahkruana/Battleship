@@ -83,7 +83,7 @@ class BattleshipGame:
         attackResult = game.getOpponent().board.attacked(row, col)
 
         if attackResult == "sunk":
-            if game.getOpponent.board.allSunk() == True:
+            if game.getOpponent().board.allSunk() == True:
                 game.winner = game.getCurrent()
 
         game.current += 1
