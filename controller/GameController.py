@@ -1,7 +1,6 @@
 import os
-from model.game import BattleshipGame
-from model.ai_player import AIPlayer
-from view.display import TextualView
+from model.BattleshipGame import BattleshipGame
+from view.TextualView import TextualView
 
 class GameController:
 

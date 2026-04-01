@@ -1,1 +1,0 @@
-from view.textualView import TextualView

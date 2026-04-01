@@ -1,4 +1,4 @@
-from model.ship import Ship
+from model.Ship import Ship
 
 class Board:
     EMPTY = "_"

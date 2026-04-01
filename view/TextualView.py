@@ -1,6 +1,6 @@
-from model.board import Board
-from model.ship import Ship
-from model.player import Player
+from model.Board import Board
+from model.Ship import Ship
+from model.Player import Player
 
 class TextualView:
     '''
@@ -28,6 +28,8 @@ class TextualView:
                     cell = Board.EMPTY
 
                 print(cell, end=" ")
+            
+            print()
 
         print()
 
