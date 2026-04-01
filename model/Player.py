@@ -1,5 +1,5 @@
-from model.board import Board
-from model.ship import createShips
+from model.Board import Board
+from model.Ship import createShips
 
 class Player:
     '''

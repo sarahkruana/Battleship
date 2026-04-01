@@ -1,6 +1,6 @@
-from model.board import Board
-from model.ship import Ship
-from model.player import Player
+from model.Board import Board
+from model.Ship import Ship
+from model.Player import Player
 
 class BattleshipGame:
 

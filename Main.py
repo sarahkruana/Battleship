@@ -1,6 +1,6 @@
-from model.game import BattleshipGame
-from view.display import TextualView
-from controller.controller import GameController
+from model.BattleshipGame import BattleshipGame
+from view.TextualView import TextualView
+from controller.GameController import GameController
 
 if __name__ == "__main__":
     print("Welcome to Battleship!")
