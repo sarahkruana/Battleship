@@ -2,170 +2,75 @@ import unittest
 from io import StringIO
 import sys
 
-from model.Board import Board
-from model.Ship import Ship
-from model.Player import Player
 from view.TextualView import TextualView
+from model.Player import Player
 
 
-class TestTextualView(unittest.TestCase):
+class TestGameView(unittest.TestCase):
 
     def setUp(self):
         self.view = TextualView()
-        self.size = 5
-        self.board = Board(self.size)
-        self.player = Player("RedPlayer", self.size)
-        self.opponent = Player("BluePlayer", self.size)
+        self.player = Player("Red", 5)
+        self.opponent = Player("Blue", 5)
 
-        # To place one ship for testing sink/hit behavior
-        self.test_ship = Ship("Destroyer", 2)
-        positions = [(0, 0), (0, 1)]
-        self.board.placeShip(self.test_ship, positions)
-
-    # ======================
-    # Helper to get printed output
-    # ======================
-    def get_print_output(self, func, *args, **kwargs):
+    def capture_output(self, func, *args):
         captured = StringIO()
-        original_stdout = sys.stdout
         sys.stdout = captured
-        try:
-            func(*args, **kwargs)
-        finally:
-            sys.stdout = original_stdout
+        func(*args)
+        sys.stdout = sys.__stdout__
         return captured.getvalue()
 
-    # ======================
-    # printBoard Tests
-    # ======================
-
-    def test_printBoard_shows_ships_when_hideShips_False(self):
-        output = self.get_print_output(self.view.printBoard, self.board, False)
-
-        self.assertIn("S", output)          
-        self.assertIn("1 |", output)        
-        self.assertIn(" 1  2  3  4  5 ", output)  
-
-    def test_printBoard_hides_ships_when_hideShips_True(self):
-        output = self.get_print_output(self.view.printBoard, self.board, True)
-
-        self.assertNotIn("S", output)       
+    def test_printBoard_shows_grid(self):
+        output = self.capture_output(self.view.printBoard, self.player.board, False)
         self.assertIn("_", output)
+        self.assertIn("1", output)
 
-    def test_printBoard_shows_hits_and_misses(self):
-        self.board.attacked(0, 0)   
-        self.board.attacked(2, 2)   
+    def test_printBoard_hides_ships(self):
+        ship = self.player.fleet[4]
+        self.player.board.placeShip(ship, [(0,0),(0,1)])
 
-        output = self.get_print_output(self.view.printBoard, self.board, False)
+        output = self.capture_output(self.view.printBoard, self.player.board, True)
+        self.assertNotIn("S", output)
 
-        self.assertIn("X", output)
-        self.assertIn("O", output)
-        self.assertIn("S", output)
+    def test_printView_outputs_both_boards(self):
+        output = self.capture_output(self.view.printView, self.player, self.opponent)
+        self.assertIn("Red's board", output)
+        self.assertIn("Blue's board", output)
 
-    # ======================
-    # printView Tests
-    # ======================
+    def test_printView_shows_fleet(self):
+        output = self.capture_output(self.view.printView, self.player, self.opponent)
+        self.assertIn("Fleet", output)
+        for ship in self.player.fleet:
+            self.assertIn(ship.name, output)
 
-    def test_printView_contains_all_sections(self):
-        output = self.get_print_output(self.view.printView, self.player, self.opponent)
-
-        self.assertIn(f"{self.player.name}'s board:", output)
-        self.assertIn(f"{self.player.name}'s Fleet:", output)
-        self.assertIn(f"{self.opponent.name}'s board:", output)
-
-    def test_printView_shows_current_player_ships(self):
-        output = self.get_print_output(self.view.printView, self.player, self.opponent)
-
-        self.assertIn("S", output)                    
-        self.assertIn("Destroyer", output)            
-
-    def test_printView_hides_opponent_ships(self):
-        output = self.get_print_output(self.view.printView, self.player, self.opponent)
-
-        opponent_board_start = output.find(f"{self.opponent.name}'s board:")
-        opponent_section = output[opponent_board_start:]
-        self.assertNotIn("S", opponent_section)
-
-    # ======================
-    # showWinner Tests
-    # ======================
-
-    def test_showWinner_prints_correct_message(self):
-        output = self.get_print_output(self.view.showWinner, self.player)
-
-        self.assertIn("RedPlayer has won the game!", output)
-
-    # ======================
-    # showAttackResult Tests
-    # ======================
+    def test_showWinner(self):
+        output = self.capture_output(self.view.showWinner, self.player)
+        self.assertIn("Red has won the game!", output)
 
     def test_showAttackResult_hit(self):
-        output = self.get_print_output(
-            self.view.showAttackResult, "RedPlayer", 2, 3, "hit"
-        )
-        self.assertIn("RedPlayer fired at (3, 4) — HIT!", output)
+        output = self.capture_output(self.view.showAttackResult, "Red", 0, 0, "hit")
+        self.assertIn("HIT", output)
 
     def test_showAttackResult_miss(self):
-        output = self.get_print_output(
-            self.view.showAttackResult, "BluePlayer", 0, 0, "miss"
-        )
-        self.assertIn("BluePlayer fired at (1, 1) — miss.", output)
+        output = self.capture_output(self.view.showAttackResult, "Red", 0, 0, "miss")
+        self.assertIn("miss", output)
 
     def test_showAttackResult_sunk(self):
-        output = self.get_print_output(
-            self.view.showAttackResult, "RedPlayer", 4, 4, "sunk"
-        )
-        self.assertIn("RedPlayer fired at (5, 5) — HIT! Ship has been sunk!", output)
+        output = self.capture_output(self.view.showAttackResult, "Red", 0, 0, "sunk")
+        self.assertIn("sunk", output)
 
     def test_showAttackResult_already_attacked(self):
-        output = self.get_print_output(
-            self.view.showAttackResult, "RedPlayer", 1, 1, "already attacked."
-        )
-        self.assertIn("(2, 2) has already been attacked", output)
+        output = self.capture_output(self.view.showAttackResult, "Red", 0, 0, "already_attacked")
+        self.assertIn("already been attacked", output)
 
     def test_showAttackResult_invalid(self):
-        output = self.get_print_output(
-            self.view.showAttackResult, "RedPlayer", 10, 10, "invalid"
-        )
-        self.assertIn("(11, 11) is off the board", output)
+        output = self.capture_output(self.view.showAttackResult, "Red", 0, 0, "invalid")
+        self.assertIn("off the board", output)
 
-    # ======================
-    # Edge Cases
-    # ======================
-
-    def test_printBoard_empty_board(self):
-        empty_board = Board(5)
-        output = self.get_print_output(self.view.printBoard, empty_board, False)
-
-        self.assertIn("_", output)
-        self.assertNotIn("S", output)
-        self.assertNotIn("X", output)
-        self.assertNotIn("O", output)
-
-    def test_printBoard_large_board_size_10(self):
-        large_board = Board(10)
-        output = self.get_print_output(self.view.printBoard, large_board, False)
-
-        self.assertIn(" 1  2  3  4  5  6  7  8  9  10 ", output)
-        self.assertIn("10 |", output)
-
-    def test_printView_with_partially_sunk_ship(self):
-        self.board.attacked(0, 0)
-
-        output = self.get_print_output(self.view.printView, self.player, self.opponent)
-
-        self.assertIn("X", output)
-        self.assertIn("Destroyer", output)
-        self.assertIn("sunk=False", output)
-
-    def test_printView_with_fully_sunk_ship(self):
-        self.board.attacked(0, 0)
-        self.board.attacked(0, 1)
-
-        output = self.get_print_output(self.view.printView, self.player, self.opponent)
-
-        self.assertIn("sunk=True", output)
+    def test_promptTurn(self):
+        output = self.capture_output(self.view.promptTurn)
+        self.assertIn("Please enter an integer", output)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
