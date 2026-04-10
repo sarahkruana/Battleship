@@ -1,12 +1,13 @@
 from model.BattleshipGame import BattleshipGame
+from model.Player import Player
+from model.AIPlayer import AIPlayer
 from view.TextualView import TextualView
 from controller.GameController import GameController
 
 if __name__ == "__main__":
     print("Welcome to Battleship!")
 
-    redPlayer = input("Please enter the name of redPlayer: ").strip()
-    bluePlayer = input("Please enter the name of bluePlayer: ").strip()
+    redName = input("Please enter the name of redPlayer: ").strip()
 
     flag = False
     size = 0
@@ -25,6 +26,9 @@ if __name__ == "__main__":
 
         size = boardSize
         flag = True
+
+    redPlayer = Player(redName, size)
+    bluePlayer = AIPlayer("Monte", size)
 
     game = BattleshipGame(redPlayer, bluePlayer, size)
     view = TextualView()

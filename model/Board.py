@@ -37,14 +37,11 @@ class Board:
         cols = [c for _, c in positions]
         print(f"rows: {rows}, cols: {cols}")
         if len(set(rows)) != 1 and len(set(cols)) != 1:
-            print("failed: not a straight line")
             return False
         
         if len(set(rows)) == 1:
-            print("columns are not contiguous")
             return board.checkContiguous(cols)
         else:
-            print("rows are not contiguous")
             return board.checkContiguous(rows)
         
         return True

@@ -1,6 +1,7 @@
 import os
 from model.BattleshipGame import BattleshipGame
 from view.TextualView import TextualView
+from model.AIPlayer import AIPlayer
 
 class GameController:
 
@@ -28,11 +29,13 @@ class GameController:
         for player in [cont.game.redPlayer, cont.game.bluePlayer]:
             cont.clearScreen()
             
-            #for not we aren't dealing with ai player but we would slightly change this portion to
-            #deal with the ai player
-            print(f"{player.name}, please place your ships")
-            for ship in player.fleet:
-                cont.placeShip(player, ship)
+            if isinstance(player, AIPlayer):
+                player.placeShipsRand()
+                print(f"{player.name} ships have all been placed")
+            else:
+                print(f"{player.name}, please place your ships")
+                for ship in player.fleet:
+                    cont.placeShip(player, ship)
         
         cont.game.gameStart()
     
@@ -90,7 +93,8 @@ class GameController:
         return locations
     
     '''
-    Runs the actual playing of the game
+    Runs the actual playing of the game. 
+    Note: only waits for the human player to press enter, not for the ai player
     '''
     def runBattle(cont):
         while not cont.game.isOver():
@@ -100,27 +104,30 @@ class GameController:
 
             cont.view.printView(current, opponent)
 
-            #same thing as above, have to change slightly witht the AI player
             cont.runTurn(current, opponent)
 
-            input("\n Please press enter to continue")
+            if not isinstance(current, AIPlayer):
+                input("\n Please press enter to continue")
 
         cont.clearScreen()
         cont.view.showWinner(cont.game.winner)
 
     '''
     Handles a turn (prompts the input, processes the attack, etc)
+    Note: only human players are prompted for input (ai automatically chooses the best one)
     @param current (Player) represebts the current player
     @param opponent (Player) represents the opponent
     '''
     def runTurn(cont, current, opponent):
-        print(f"\n {current.name}, please enter your attack in the format row,col")
-
-        row, col = cont.getAttackInput()
-
-        attackResult = cont.game.attack(row - 1, col - 1)
-
-        cont.view.showAttackResult(current.name, row - 1, col - 1, attackResult)
+        if isinstance(current, AIPlayer):
+            row, col = current.chooseAttack(opponent.board)
+            attackResult = cont.game.attack(row, col)
+            cont.view.showAttackResult(current.name, row, col, attackResult)
+        else:
+            print(f"\n {current.name}, please enter your attack in the format row,col")
+            row, col = cont.getAttackInput()
+            attackResult = cont.game.attack(row - 1, col - 1)
+            cont.view.showAttackResult(current.name, row - 1, col - 1, attackResult)
 
     '''
     Parses the input that the user gives as an attack
