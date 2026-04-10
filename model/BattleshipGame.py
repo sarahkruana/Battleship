@@ -6,15 +6,15 @@ class BattleshipGame:
 
     '''
     Basic constructor to initialize a game
-    @param redPlayer (str) is a string representing the name of the first player
-    @param bluePlayer (str) is a string representing the name of the second player 
+    @param redPlayer (Player) represents the first player
+    @param bluePlayer (Player) represents the second player
     @param size (int) represents teh designated board size. 
     The model does not handle size restrictions
     '''
     def __init__(game, redPlayer, bluePlayer, size):
         game.size = size
-        game.redPlayer = Player(redPlayer, size)
-        game.bluePlayer = Player(bluePlayer, size)
+        game.redPlayer = redPlayer
+        game.bluePlayer = bluePlayer
         game.current = 0
         game.winner = None
         game.started = False

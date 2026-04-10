@@ -14,7 +14,7 @@ The model will handle the game mechanics.
 - placing the target (and determining validity)
 - determining the winner
 - keeping score
-- etc (will be updated as we continue making the game)
+- etc
 to note:
 - the red player will start first, you cannot place any ships after the game has been started, you cannot attack if the game has not been started yet
 
@@ -34,18 +34,44 @@ The textual view will represent both the human players board along with a model 
 # File Path Structure
 +- Battleship/
 
-| +- main/
-
 | +- controller/
+
+|  | +- __init__.py
+
+|  | +- GameController.py
 
 | +- model/
 
+|  | +- __init__.py
+
+|  | +- AIPlayer.py
+ 
+|  | +- BattleshipGame.py
+
+|  | +- Board.py
+
+|  | +- Player.py
+
+|  | +- Ship.py
+
 | +- view/
+
+|  | +- __init__.py
+
+|  | +- TextualView.py
 
 | +- test/
 
-|| +- controller/
+|  | +- controller/
 
-|| +- model/
+|  |  | +- TestGameController.py
 
-|| +- view/
+|  | +- model/
+
+|  |  | +- TestGameModel.py
+
+|  | +- view/
+
+|  |  | +- TestGameView.py
+
+| +- README.md
