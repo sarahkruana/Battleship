@@ -3,7 +3,7 @@ from model.Ship import Ship
 from model.Player import Player
 
 class TextualView:
-    
+
     '''
     Prints the board of a designated player.
     @param board (Board) represents the players board
