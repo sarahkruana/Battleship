@@ -1,5 +1,6 @@
 import random
 from model.Player import Player
+from model.MonteCarloAgent import MonteCarloAgent
 
 class AIPlayer(Player):
 
@@ -11,6 +12,7 @@ class AIPlayer(Player):
     '''
     def __init__(ai, name, size):
         super().__init__(name, size)
+        ai.agent = MonteCarloAgent(simulations=1000)
 
     '''
     Places all of the ships randomly on the board. For each ship, it will pick the first 
@@ -44,11 +46,12 @@ class AIPlayer(Player):
         return pos
     
     '''
-    Chooses a random cell to attack. (placeholder till i do the monte carlo one)
+    Chooses a random cell to attack using the Monte Carlo agent. Will pass through the opponent's
+    board and unsunk ships so that the agent can build a probability map for best targets
     Returns a position (tuple[int, int]) representing the chosen (row, col)
+    @param opponentBoard (Board) represents the opponent's board
     '''
     def chooseAttack(ai, opponentBoard):
-        boardCells = [(r, c) for r in range(ai.board.size) for c in range(ai.board.size)]
-        unattacked = [cell for cell in boardCells if cell not in opponentBoard.attacks]
+        unsunk = [ship for ship in opponentBoard.ships if not ship.isSunk()]
 
-        return random.choice(unattacked)
+        return ai.agent.chooseAttack(opponentBoard, unsunk)
