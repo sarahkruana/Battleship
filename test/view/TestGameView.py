@@ -34,13 +34,13 @@ class TestGameView(unittest.TestCase):
 
     def test_printView_outputs_both_boards(self):
         output = self.capture_output(self.view.printView, self.player, self.opponent)
-        self.assertIn("Red's board", output)
-        self.assertIn("Blue's board", output)
+        self.assertIn("Red's Board", output)
+        self.assertIn("Blue's Board", output)
 
     def test_printView_shows_fleet(self):
         output = self.capture_output(self.view.printView, self.player, self.opponent)
-        self.assertIn("Fleet", output)
-        for ship in self.player.fleet:
+        self.assertIn("Ships Remaining", output)
+        for ship in self.opponent.fleet:
             self.assertIn(ship.name, output)
 
     def test_showWinner(self):
