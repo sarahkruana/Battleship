@@ -73,6 +73,11 @@ class GameController:
     def getLocationInput(cont, size):
         userInput = input(" > ").strip().split()
 
+        for token in userInput:
+            if token.lower() == "quit":
+                print("Thanks for playing Battleship!")
+                exit()
+
         if len(userInput) != size:
             return None
         
@@ -102,12 +107,11 @@ class GameController:
             current = cont.game.getCurrent()
             opponent = cont.game.getOpponent()
 
-            cont.view.printView(current, opponent)
+            if not isinstance(current, AIPlayer):
+                cont.view.printView(current, opponent)
 
             cont.runTurn(current, opponent)
-
-            if not isinstance(current, AIPlayer):
-                input("\n Please press enter to continue")
+            input("\n Please press enter to continue")
 
         cont.clearScreen()
         cont.view.showWinner(cont.game.winner)
@@ -136,7 +140,16 @@ class GameController:
     def getAttackInput(cont):
         while True:
             userInput = input(" > ").strip()
+
+            if "quit" in userInput.lower().split():
+                print("Thanks for playing Battleship!")
+                exit()
+
             parts = userInput.split(",")
+
+            if userInput.lower() == "quit":
+                print("Thanks for playing Battlship!")
+                exit()
 
             if len(parts) != 2:
                 print("Invalid row and column")
