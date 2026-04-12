@@ -4,11 +4,14 @@ from model.Board import Board
 class MonteCarloAgent:
 
     '''
-    Contructor to initializae the Monte Carlo agent with a set number of simulations
-    @param simulations (int) represents how many random boards to simulate per turn
+    Contructor to initializae the Monte Carlo agent with a number of simulations that changes
+    depending on the stage of the game.
+    @param minSim (int) represents the min simulations to run per turn
+    @param maxSim (int) represents the max simulations to run per turn
     '''
-    def __init__(agent, simulations = 1000):
-        agent.simulations = simulations
+    def __init__(agent, minSims = 500, maxSims = 3000):
+        agent.minSims = minSims
+        agent.maxSims = maxSims
 
 
     '''
@@ -49,10 +52,13 @@ class MonteCarloAgent:
     @param unsunk (list[Ship]) represents the ships that haven't been sunk yet
     '''
     def probabilityMap(agent, opponentBoard, unsunk):
+        remaining = (opponentBoard.size * opponentBoard.size) - len(opponentBoard.attacks)
+        simulations = max(agent.minSims, min(agent.maxSims, remaining * 20))
+        
         counts = [[0 for _ in range(opponentBoard.size)] for _ in range(opponentBoard.size)]
         successfulSims = 0
 
-        for _ in range(agent.simulations):
+        for _ in range(simulations):
             simGrid = agent.runSim(opponentBoard, unsunk)
 
             if simGrid is None:

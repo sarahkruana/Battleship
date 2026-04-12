@@ -12,7 +12,7 @@ class AIPlayer(Player):
     '''
     def __init__(ai, name, size):
         super().__init__(name, size)
-        ai.agent = MonteCarloAgent(simulations=1000)
+        ai.agent = MonteCarloAgent()
 
     '''
     Places all of the ships randomly on the board. For each ship, it will pick the first 
