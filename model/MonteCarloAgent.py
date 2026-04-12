@@ -21,6 +21,9 @@ class MonteCarloAgent:
     def chooseAttack(agent, opponentBoard, unsunk):
         probMap = agent.probabilityMap(opponentBoard, unsunk)
 
+        minUnsunk = min(ship.size for ship in unsunk)
+        agent.applyFilter(probMap, opponentBoard, minUnsunk)
+
         bestCell = None
         bestProb = -1
 
@@ -73,7 +76,7 @@ class MonteCarloAgent:
 
     '''
     Runs one simulation by placing the rest of the unsunk ships randomly on a copy of the board.
-    Returns (list[list[bool]]) representing a 2d grid where True = ship occupies the cell
+    Returns (list[list[bool]]) representing a 2d grid where True means that a ship occupies the cell
     or returns None if the simulation failed to place the ships respecting what we already know
     @param opponentBoard (Board) represents the opponent's board
     @param unsunk (list[Ship]) represents the ships that haven't been sunk yet
@@ -152,3 +155,44 @@ class MonteCarloAgent:
 
         return pos
     
+    '''
+    Looks at the probability map to filter impossible locations. 
+    (eg if a spot has no open neibors up, down,left, or right then it's impossible 
+    to fit the smallest unsunk ship and its probability would be 0). 
+    @param probMap (list[list[float]]) represents the porbability map
+    @param opponentBoard (Board) represents the opponent's board
+    @param minUnsunk (int) represents the size of the smallest unsunk ship
+    '''
+    def applyFilter(agent, probMap, opponentBoard, minUnsunk):
+        for row in range(opponentBoard.size):
+            for col in range(opponentBoard.size):
+                if (row, col) in opponentBoard.attacks:
+                    continue
+
+                fitsHori = False
+                for start in range(col - minUnsunk + 1, col + 1):
+                    if start < 0 or start + minUnsunk > opponentBoard.size:
+                        continue
+                    if all(
+                        opponentBoard.grid[row][start + i] != Board.MISS and
+                        (row, start + i) not in opponentBoard.attacks
+                        for i in range(minUnsunk)
+                    ):
+                        fitsHori = True
+                        break
+ 
+                fitsVert = False
+                for start in range(row - minUnsunk + 1, row + 1):
+                    if start < 0 or start + minUnsunk > opponentBoard.size:
+                        continue
+                    if all(
+                        opponentBoard.grid[start + i][col] != Board.MISS and
+                        (start + i, col) not in opponentBoard.attacks
+                        for i in range(minUnsunk)
+                    ):
+                        fitsVert = True
+                        break
+ 
+                if not fitsHori and not fitsVert:
+                    probMap[row][col] = 0.0
+
