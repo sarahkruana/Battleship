@@ -135,19 +135,20 @@ class MonteCarloAgent:
     Generates a randome list of positions for a designated ship size. Picks a random starting
     cell and a random direction then builds a list
     Returns (list[tuple[int, int]]) representing the positins picked
-    @param size (int) represents the size of the ship
+    @param shipSize (int) represents the size of the ship
+    @param boardSize represents the size of the board
     '''
-    def generatePos(ai, size):
+    def generatePos(agent, shipSize, boardSize):
         direction = random.choice(["hori", "vert"])
         
         if direction == "hori":
-            row = random.randint(0, ai.board.size - 1)
-            col = random.randint(0, ai.board.size - size)
-            pos = [(row, col + i) for i in range(size)]
+            row = random.randint(0, boardSize - 1)
+            col = random.randint(0, boardSize - shipSize)
+            pos = [(row, col + i) for i in range(shipSize)]
         else:
-            row = random.randint(0, ai.board.size - size)
-            col = random.randint(0, ai.board.size - 1)
-            pos = [(row + i, col) for i in range(size)]
+            row = random.randint(0, boardSize - shipSize)
+            col = random.randint(0, boardSize - 1)
+            pos = [(row + i, col) for i in range(shipSize)]
 
         return pos
     

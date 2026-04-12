@@ -9,6 +9,10 @@ if __name__ == "__main__":
 
     redName = input("Please enter the name of redPlayer: ").strip()
 
+    if redName.lower() == "quit":
+        print("Thanks for playing Battleship!")
+        exit()
+
     flag = False
     size = 0
     while not flag:

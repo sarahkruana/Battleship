@@ -35,7 +35,6 @@ class Board:
             
         rows = [r for r, _ in positions]
         cols = [c for _, c in positions]
-        print(f"rows: {rows}, cols: {cols}")
         if len(set(rows)) != 1 and len(set(cols)) != 1:
             return False
         

@@ -7,6 +7,10 @@ Battleship is a game with two agents. Each agent is able to see their board alon
 # Implementation
 Our game will have a model, a controller, and a view. Each agent (ai or human) will have their own controller which will handle inputs from the view and pass it through to the model. After each input gets passed to the controller, the view will refresh and switch players. 
 
+Quick Notes:
+to run the game type "python Main.py" into the terminal!
+to quit the game type "quit" at any time (case insensitive)
+
 Model:
 The model will handle the game mechanics.
 - starting the game
