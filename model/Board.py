@@ -28,11 +28,11 @@ class Board:
     '''
     def canPlace(board, positions) -> bool:
         for row, col in positions:
-            if board.grid[row][col] != board.EMPTY:
-                return False
             if not board.checkInput(row, col):
                 return False
-            
+            if board.grid[row][col] != board.EMPTY:
+                return False
+        
         rows = [r for r, _ in positions]
         cols = [c for _, c in positions]
         if len(set(rows)) != 1 and len(set(cols)) != 1:
