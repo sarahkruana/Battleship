@@ -58,7 +58,7 @@ class TestBoard(unittest.TestCase):
 
         self.board.placeShip(self.ship, [(0,0),(0,1)])
         cruiser = Ship("Cruiser", 3)
-        result = self.board.placeShip(other, [(0,0),(0,1),(0,2)])
+        result = self.board.placeShip(cruiser, [(0,0),(0,1),(0,2)])
 
         self.assertFalse(result)
 
