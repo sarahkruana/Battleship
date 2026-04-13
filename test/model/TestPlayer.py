@@ -6,18 +6,18 @@ from model.Board import Board
 
 class TestPlayer(unittest.TestCase):
    
-   def setUp(self):
+    def setUp(self):
        self.player = Player("Red", 7)
 
 
-   def test_init(self):
+    def test_init(self):
        self.assertEqual(self.player.name, "Red")
        self.assertIsInstance(self.player.board, Board)
        self.assertEqual(self.player.board.size, 7)
        self.assertEqual(len(self.player.fleet), 5)
 
 
-   def test_fleet(self):
+    def test_fleet(self):
        names = [ship.name for ship in self.player.fleet]
        self.assertIn("Carrier", names)
        self.assertIn("Battleship", names)
@@ -26,7 +26,7 @@ class TestPlayer(unittest.TestCase):
        self.assertIn("Destroyer", names)
 
 
-   def test_uniqueFleet(self):
+    def test_uniqueFleet(self):
        other = Player("Blue", 7)
        self.assertIsNot(self.player.fleet, other.fleet)
        self.assertIsNot(self.player.board, other.board)
