@@ -11,7 +11,6 @@ from controller.GameController import GameController
 
 class TestGameController(unittest.TestCase):
 
-
     def setUp(self):
        self.redPlayer = Player("Red", 7)
        self.bluePlayer = AIPlayer("Monte", 7)
