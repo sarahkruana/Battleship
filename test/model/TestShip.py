@@ -4,7 +4,6 @@ from model.Ship import Ship, createShips
 
 class TestShip(unittest.TestCase):
 
-
    def setUp(self):
        self.ship = Ship("Destroyer", 2)
 
@@ -16,38 +15,31 @@ class TestShip(unittest.TestCase):
        self.assertEqual(self.ship.hits, set())
 
 
-
-
    def test_validPlaceShip(self):
        self.ship.placeShip([(3,3),(3,4)])
        self.assertEqual(self.ship.positions, [(3,3),(3,4)])
-
 
    def test_badSizePlaceShip(self):
        with self.assertRaises(ValueError):
            self.ship.placeShip([(0,0)])
 
 
-
-
    def test_validHit(self):
        self.ship.placeShip([(0,0),(0,1)])
        result = self.ship.hit(0, 0)
+       
        self.assertTrue(result)
        self.assertIn((0,0), self.ship.hits)
-
 
        self.ship.hit(0, 0)
        self.assertEqual(len(self.ship.hits), 1)
 
-
    def test_badHit(self):
        self.ship.placeShip([(0,0),(0,1)])
        result = self.ship.hit(1, 1)
+
        self.assertFalse(result)
        self.assertNotIn((1,1), self.ship.hits)
-
-
 
 
    def test_notIsSunk(self):
@@ -55,13 +47,11 @@ class TestShip(unittest.TestCase):
        self.ship.hit(0, 0)
        self.assertFalse(self.ship.isSunk())
 
-
    def test_sunkIsSunk(self):
        self.ship.placeShip([(0,0),(0,1)])
        self.ship.hit(0, 0)
        self.ship.hit(0, 1)
        self.assertTrue(self.ship.isSunk())
-
 
   
    def test_str(self):
@@ -74,6 +64,7 @@ class TestShip(unittest.TestCase):
 
    def test_createShips(self):
        fleet = createShips()
+
        self.assertEqual(len(fleet), 5)
        self.assertEqual(fleet[0].name, "Carrier")
        self.assertEqual(fleet[0].size, 5)
