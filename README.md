@@ -1,6 +1,8 @@
 # Battleship Project
 # Sarah Ruana and Shweta Pattanaik
 
+#TODO: need to look over and make sure it has everything since i haven't been good ab updating it
+
 # Overview
 Battleship is a game with two agents. Each agent is able to see their board along with a model of the opposing agents board. At the start of the game, each player places a set of ships onto their board (a grid based system) without revealing the locations. Then, at the start of each turn, each player takes turns guessing the coordinates of the opposing player's ships. The end goal is to find, hit and sink the opponents ships.
 
