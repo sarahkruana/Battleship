@@ -16,7 +16,7 @@ class MonteCarloAgent:
 
     '''
     Picks the best cell to attack based on what we know from the probability map
-    Picks the unattacked cell with the highest probability (decision threshold)
+    Picks the unattacked cell with the highest probability
     Returns the cell (tuple[int,int]) that represents the chosen (row, col)
     @param opponentBoard (Board) represents the opponents board
     @param unsunk (list[Ship]) represents the ships still in play
@@ -164,7 +164,7 @@ class MonteCarloAgent:
     '''
     Looks at the probability map to filter impossible locations. 
     (eg if a spot has no open neibors up, down,left, or right then it's impossible 
-    to fit the smallest unsunk ship and its probability would be 0). 
+    to fit the smallest unsunk ship and its probability would be 0). (decision threshold)
     @param probMap (list[list[float]]) represents the porbability map
     @param opponentBoard (Board) represents the opponent's board
     @param minUnsunk (int) represents the size of the smallest unsunk ship
