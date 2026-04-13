@@ -71,11 +71,11 @@ class MonteCarloAgent:
             
             successfulSims += 1
             
-            probMap = [[0.0 for _ in range(opponentBoard.size)] for _ in range(opponentBoard.size)]
-            if successfulSims > 0:
-                for row in range(opponentBoard.size):
-                    for col in range(opponentBoard.size):
-                        probMap[row][col] = counts[row][col] / successfulSims
+        probMap = [[0.0 for _ in range(opponentBoard.size)] for _ in range(opponentBoard.size)]
+        if successfulSims > 0:
+            for row in range(opponentBoard.size):
+                for col in range(opponentBoard.size):
+                    probMap[row][col] = counts[row][col] / successfulSims
         
         return probMap
     
