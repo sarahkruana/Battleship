@@ -14,7 +14,7 @@ Our game is based on a model-view-controller structure where the the controller 
 - to quit the game type "quit" (cannot type 1,quit it needs to be its own token)
 - enter coordinates in the system as row,col row,col (eg: 1,1 1,2 1,3)
 
-
+# Structure:
 Model:
 The model will handle the game mechanics.
 - starting the game
