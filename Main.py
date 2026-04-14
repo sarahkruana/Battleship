@@ -4,6 +4,11 @@ from model.AIPlayer import AIPlayer
 from view.TextualView import TextualView
 from controller.GameController import GameController
 
+'''
+Simple main class that just takes the name of the user, the size of the board, and then a bunch of 
+coordinates for the user placing their ships. Then it will run the game between the user and the 
+Monte Carlo agent using the MVC structure.
+'''
 if __name__ == "__main__":
     print("Welcome to Battleship!")
 
