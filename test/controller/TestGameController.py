@@ -1,6 +1,5 @@
 import unittest
 from unittest.mock import patch, MagicMock
-#i needed to create mocks of the mvc game enviroment so i used patch and magicmock
 
 from model.BattleshipGame import BattleshipGame
 from model.Player import Player
